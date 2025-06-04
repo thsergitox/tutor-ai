@@ -233,13 +233,14 @@ export default function RightSidebar({
                   </div>
                 )}
                 {/* Transcript Status Note */}
-                {!isConnected && (
+                {/*{!isConnected && (
                   <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                     <p className="text-xs text-blue-700">
                       <strong>Nota:</strong> Si no ves transcripciones, verifica que tu agente en ElevenLabs tenga habilitada la voz y no esté en modo solo texto.
                     </p>
                   </div>
-                )}
+                )}*/}
+                
               </>
             )}
           </div>
