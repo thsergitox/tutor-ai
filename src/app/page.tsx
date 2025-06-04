@@ -24,10 +24,10 @@ export default function Home() {
                 Comenzar a Practicar
               </Link>
               <Link
-                href="/lessons"
+                href="/dashboard"
                 className="border border-brand-primary text-brand-primary px-6 py-3 rounded-lg font-medium hover:bg-brand-primary hover:text-white transition-colors duration-200"
               >
-                Ver Lecciones
+                Ver Progreso
               </Link>
             </div>
           </div>

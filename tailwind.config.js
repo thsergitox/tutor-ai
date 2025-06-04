@@ -28,6 +28,11 @@ module.exports = {
     'bg-brand-success',
     'bg-brand-warning',
     'bg-brand-danger',
+    'bg-opacity-10',
+    'bg-blue-100',
+    'bg-green-100',
+    'bg-red-100',
+    'bg-purple-100',
   ],
   plugins: [],
 } 
