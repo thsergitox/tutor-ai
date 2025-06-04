@@ -61,8 +61,8 @@ export default function LessonsSidebar() {
                 onClick={() => setSelectedMcerLevel(level.id)}
                 className={`p-3 rounded-lg border transition-colors text-center 
                   ${isActive 
-                    ? 'bg-brand-success text-white border-transparent shadow-md' // Use brand-success for active
-                    : `${level.color ? level.color + ' bg-opacity-20 border-transparent' : 'bg-gray-50 border-gray-200'} text-gray-700 hover:bg-gray-100 hover:border-gray-300`
+                    ? 'bg-brand-success text-white border-transparent shadow-md' // Active state
+                    : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100 hover:border-gray-300' // Non-active state
                   }`}
               >
                 <span className={`block font-bold text-base sm:text-lg ${isActive ? 'text-white' : 'text-gray-800'}`}>{level.level}</span>

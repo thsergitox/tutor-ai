@@ -125,13 +125,13 @@ export default function LessonsPageContent() {
             return (
               <span key={tag.id} className="bg-brand-primary bg-opacity-10 text-brand-primary px-3 py-1.5 rounded-full text-xs font-medium flex items-center space-x-1.5">
                 <TagIcon className="w-3.5 h-3.5" />
-                <span>{tag.label}</span>
+                <span className="text-white">{tag.label}</span>
               </span>
             );
           })}
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
-          <button className="bg-brand-primary text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-sm">
+          <button className="bg-brand-primary text-white px-5 py-2.5 rounded-lg font-semibold hover:brightness-90 transition-colors text-sm">
             Crear Lección
           </button>
           <button className="border border-brand-primary text-brand-primary bg-white px-5 py-2.5 rounded-lg font-medium hover:bg-brand-primary hover:text-white transition-colors text-sm">
@@ -162,7 +162,7 @@ export default function LessonsPageContent() {
 
       {/* Floating Action Button */}
       <button 
-        className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 bg-brand-primary text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:bg-blue-700 transition-colors z-40"
+        className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 bg-brand-primary text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:brightness-90 transition-colors z-40"
         aria-label="Crear nueva lección"
       >
         <Plus className="w-7 h-7" />
