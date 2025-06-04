@@ -1,0 +1,8 @@
+---
+description: Creation of a new iu component
+globs: 
+alwaysApply: false
+---
+Always use shadcn when you create a new ui component, use the following command (this is an example) pnpm dlx shadcn@latest add button
+This project is mobile first so consider when you create components and implement views
+We use zustand for state management
