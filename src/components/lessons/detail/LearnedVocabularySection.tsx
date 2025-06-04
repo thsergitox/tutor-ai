@@ -1,6 +1,6 @@
 import React from 'react';
 import { LearnedWordItem } from '@/model/lessonsData';
-import { BookOpen, ChevronRight } from 'lucide-react'; // Icons
+import { BookOpen } from 'lucide-react'; // Icons
 
 interface LearnedVocabularySectionProps {
   words: LearnedWordItem[];

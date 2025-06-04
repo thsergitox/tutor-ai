@@ -6,17 +6,11 @@ import {
   mockCommunityChallenge,
   mockTopParticipants,
   mockLanguageExchangeUsers,
-  CommunityChallenge,
-  TopParticipant,
-  LanguageExchangeUser,
 } from '@/model/lessonsData';
 import {
-  ChevronDown,
-  PlusCircle,
   Users,
   Award,
   MessageCircle, // For Iniciar Conversacion / Conectar
-  TrendingUp,
   Info, // For days remaining
 } from 'lucide-react';
 

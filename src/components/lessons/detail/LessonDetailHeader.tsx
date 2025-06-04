@@ -1,7 +1,7 @@
 import React from 'react';
 import { LessonContent } from '@/model/lessonsData';
 import Image from 'next/image'; // Using next/image for better optimization
-import { Tag, Clock, BarChart2, BookOpen } from 'lucide-react'; // Example icons
+import { Clock, BarChart2, BookOpen } from 'lucide-react'; // Example icons
 
 interface LessonDetailHeaderProps {
   lesson: LessonContent;

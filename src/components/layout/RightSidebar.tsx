@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Flame, Target, Mic, Volume2, VolumeX, MoreHorizontal } from 'lucide-react';
+import { Flame, Mic, Volume2, VolumeX, MoreHorizontal } from 'lucide-react';
 
 interface RightSidebarProps {
   isMobileOpen?: boolean;

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   mockCurrentUserLevelId,
   mockMcerLevels,
@@ -8,13 +8,10 @@ import {
   mockRecommendedLessons,
   mockLessonCategories,
   mockNewLessonNotificationData,
-  McerLevel,
-  AiGenerationTag,
   RecommendedLessonCard,
   LessonCategoryCard,
-  NewLessonNotification
 } from '@/model/lessonsData';
-import { Sparkles, Zap, CheckCircle, Sliders, Users, Plane, GraduationCap, Briefcase, BookOpen, Plus, X as CloseIcon } from 'lucide-react'; // Added Plus for FAB, CloseIcon
+import { Sparkles, CheckCircle, BookOpen, Plus, X as CloseIcon } from 'lucide-react'; // Added Plus for FAB, CloseIcon
 
 const UserLevelBadge: React.FC = () => {
   const currentUserLevel = mockMcerLevels.find(level => level.id === mockCurrentUserLevelId);

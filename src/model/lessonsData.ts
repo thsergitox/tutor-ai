@@ -1,4 +1,4 @@
-import { BarChart3, BookOpen, CheckCircle, Clock, Award, Zap, MessageSquare, TrendingUp, Edit3, PieChart, History, Palette, Brain, Users, Target as TargetIcon, FileText, Sliders, AlertTriangle, Briefcase, Plane, GraduationCap, Lightbulb } from 'lucide-react';
+import { BarChart3, BookOpen, CheckCircle, Clock, Award, Zap, MessageSquare, Edit3, PieChart, History, Palette, Users, Target as TargetIcon, Sliders, Briefcase, Plane, GraduationCap, Lightbulb } from 'lucide-react';
 
 // Interfaces
 export interface SidebarNavItem {

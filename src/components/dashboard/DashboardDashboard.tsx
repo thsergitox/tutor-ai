@@ -10,9 +10,7 @@ import {
   StatCardItem,
   ActivityDataItem, // This is for individual day data
   WeeklyActivityData, // Type for the whole week structure
-  SkillDetail,
-  Achievement,
-  OverallLevel
+  SkillDetail
 } from '@/model/lessonsData';
 import { ChevronDown, TrendingUp, TrendingDown, Minus, Award, ChevronLeft, ChevronRight } from 'lucide-react';
 

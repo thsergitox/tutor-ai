@@ -3,20 +3,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  mockPopularTopics,
-  mockOnlineUsers,
+import {  mockOnlineUsers,
   PopularTopic,
-  OnlineUser,
 } from '@/model/lessonsData';
 import {
   Search,
   Globe,
-  MessagesSquare,
   BarChart3,
-  TrendingUp,
-  Flame,
-  ChevronRight,
   Gamepad2, // Example for Gaming
   Briefcase,
 } from 'lucide-react';

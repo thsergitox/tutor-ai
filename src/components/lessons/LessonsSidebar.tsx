@@ -8,7 +8,6 @@ import {
   mockCurrentUserLevelId,
   LessonFilter,
   McerLevel,
-  HelpAssistantCallout,
 } from '@/model/lessonsData';
 import { Search, HelpCircle } from 'lucide-react'; // Assuming Lightbulb was a placeholder and HelpCircle is more suitable for "Necesitas ayuda?"
 

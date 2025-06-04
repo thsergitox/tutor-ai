@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { MessageCircle, X, Lightbulb } from 'lucide-react'; // Or Brain, Sparkles
+import { X, Lightbulb } from 'lucide-react'; // Or Brain, Sparkles
 
 interface LessonSummaryBotProps {
   summary: string;
