@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@elevenlabs/react':
+        specifier: ^0.1.6
+        version: 0.1.6(react@19.1.0)
       '@heroicons/react':
         specifier: ^2.2.0
         version: 2.2.0(react@19.1.0)
@@ -67,6 +70,14 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@elevenlabs/client@0.1.6':
+    resolution: {integrity: sha512-lpROzC4m13OfhMdGbV+zpyETWn1NFsj9lXWexZHp5nPNv80/CtmtxLpGPGqMlko73GNlAt3EgmoFPxUKcGVH1A==}
+
+  '@elevenlabs/react@0.1.6':
+    resolution: {integrity: sha512-7T7JK4i34T2yKNCrK6dlgv+w7w866dbhJlAN6YCPzqZvbpJnAOJ/eQv/vdIGgiXJ+vc49YFrKSanqiLtiJURfA==}
+    peerDependencies:
+      react: '>=16.8.0'
 
   '@emnapi/core@1.4.3':
     resolution: {integrity: sha512-4m62DuCE07lw01soJwPiBGC0nAww0Q+RY70VZ+n49yDIO13yyinhbWCeNnaob0lakDtWQzSdtNWzJeOJt2ma+g==}
@@ -1865,6 +1876,13 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
+
+  '@elevenlabs/client@0.1.6': {}
+
+  '@elevenlabs/react@0.1.6(react@19.1.0)':
+    dependencies:
+      '@elevenlabs/client': 0.1.6
+      react: 19.1.0
 
   '@emnapi/core@1.4.3':
     dependencies:

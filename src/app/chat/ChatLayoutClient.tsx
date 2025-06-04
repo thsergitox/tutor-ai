@@ -1,51 +1,81 @@
 'use client';
 
-import React, { useState } from 'react';
-import Header from '@/components/layout/Header';
+import React, { cloneElement, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import LeftSidebar from "@/components/layout/LeftSidebar";
+import RightSidebar from "@/components/layout/RightSidebar";
+import { ElevenLabsProvider } from "@/providers/ElevenLabsProvider";
 
 // Interfaz para las props que ChatPage (el hijo) espera recibir inyectadas
-interface ExpectedChildProps {
-  isLeftSidebarOpenViaLayout?: boolean;
-  toggleLeftSidebarViaLayout?: () => void;
-  // params podría ser necesario si ChatPageClient lo usa directamente y no lo recibe de ChatPage (Server)
+interface ChatPageProps {
+  isLeftSidebarOpen: boolean;
+  toggleLeftSidebar: () => void;
+  toggleRightSidebar: () => void;
 }
 
-interface ChatLayoutClientProps {
+export default function ChatLayoutClient({
+  children,
+}: {
   children: React.ReactNode;
-}
-
-export default function ChatLayoutClient({ children }: ChatLayoutClientProps) {
-  const [isLeftSidebarMobileOpen, setIsLeftSidebarMobileOpen] = useState(false);
+}) {
+  const [isLeftSidebarOpenMobile, setIsLeftSidebarOpenMobile] = useState(false);
+  const [isRightSidebarOpenMobile, setIsRightSidebarOpenMobile] = useState(false);
+  const selectedLesson = 'Entrevista de Trabajo: Rol de Ingeniero';
+  
   const pathname = usePathname();
   const isChatPage = pathname.startsWith('/chat');
 
   const toggleLeftSidebarMobile = () => {
-    if (isChatPage) { // Solo permitir toggle si estamos en una página de chat
-      setIsLeftSidebarMobileOpen(!isLeftSidebarMobileOpen);
-    }
+    setIsLeftSidebarOpenMobile(!isLeftSidebarOpenMobile);
   };
 
-  const childrenWithProps = React.Children.map(children, child => {
-    if (React.isValidElement<ExpectedChildProps>(child)) {
-      // Inyectamos las props necesarias para que ChatPage (o su wrapper cliente) las reciba
-      return React.cloneElement(child, {
-        isLeftSidebarOpenViaLayout: isLeftSidebarMobileOpen,
-        toggleLeftSidebarViaLayout: toggleLeftSidebarMobile,
+  const toggleRightSidebarMobile = () => {
+    setIsRightSidebarOpenMobile(!isRightSidebarOpenMobile);
+  };
+
+  // Solo necesitamos manipular los children si estamos en una página de chat
+  const childrenWithProps = React.Children.map(children, (child) => {
+    if (isChatPage && React.isValidElement<ChatPageProps>(child)) {
+      return cloneElement(child, { 
+        isLeftSidebarOpen: isLeftSidebarOpenMobile,
+        toggleLeftSidebar: toggleLeftSidebarMobile,
+        toggleRightSidebar: toggleRightSidebarMobile 
       });
     }
     return child;
   });
 
+  // Dynamic variables for personalizing the AI agent
+  const dynamicVariables = {
+    lessonType: selectedLesson,
+    userLevel: 'intermediate',
+    userName: 'User', // This could come from user profile
+  };
+
   return (
-    <div className="h-screen bg-white flex flex-col">
-      <Header 
-        onMobileNavToggle={isChatPage ? toggleLeftSidebarMobile : undefined} 
-        isChatPage={isChatPage}
-      />
-      <div className="flex-1 overflow-hidden">
-        {childrenWithProps}
+    <ElevenLabsProvider
+      dynamicVariables={dynamicVariables}
+      onMessage={(message) => {
+        console.log('New message:', message);
+      }}
+      onError={(error) => {
+        console.error('Eleven Labs error:', error);
+      }}
+    >
+      <div className="flex h-screen bg-[#141414] text-white overflow-hidden">
+        <LeftSidebar 
+          lessonTitle={selectedLesson}
+          onToggleSidebar={toggleLeftSidebarMobile}
+          isMobileOpen={isLeftSidebarOpenMobile}
+        />
+        <div className="flex-1 flex">
+          {childrenWithProps}
+        </div>
+        <RightSidebar 
+          onToggleSidebar={toggleRightSidebarMobile}
+          isMobileOpen={isRightSidebarOpenMobile}
+        />
       </div>
-    </div>
+    </ElevenLabsProvider>
   );
 } 

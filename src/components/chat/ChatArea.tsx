@@ -1,216 +1,193 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Send } from 'lucide-react';
-
-interface Message {
-  id: number;
-  type: 'bot' | 'user';
-  content: string;
-  timestamp: string;
-  pronunciation?: 'good' | 'fair' | 'poor';
-}
-
-interface WordSuggestion {
-  word: string;
-  suggestion: string;
-}
+import React, { useEffect, useRef, useState } from 'react';
+import { Send, Mic, MicOff } from 'lucide-react';
+import { useElevenLabs } from '@/providers/ElevenLabsProvider';
 
 interface ChatAreaProps {
-  onActivateMic?: () => void;
+  onToggleRightSidebar?: () => void;
 }
 
-export default function ChatArea({ onActivateMic }: ChatAreaProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      type: 'bot',
-      content: "Good morning! I'm Sarah from TechCorp. Thanks for coming in today. Could you tell me a bit about your experience with software development?",
-      timestamp: '10:32 AM'
-    },
-    {
-      id: 2,
-      type: 'user',
-      content: "Good morning! Thank you for having me. I have been working as a software developer for three years, focusing on applications and database management.",
-      timestamp: '10:33 AM',
-      pronunciation: 'good'
-    },
-    {
-      id: 3,
-      type: 'bot',
-      content: "That's great! And what specific technologies are you most comfortable with?",
-      timestamp: '10:33 AM'
-    },
-    // Add more messages to test scrolling
-    {
-      id: 4,
-      type: 'user',
-      content: "I am proficient in JavaScript, React, Node.js, and Python. I also have experience with SQL and NoSQL databases like PostgreSQL and MongoDB.",
-      timestamp: '10:34 AM'
-    },
-    {
-      id: 5,
-      type: 'bot',
-      content: "Excellent. Can you describe a challenging project you worked on and how you overcame the obstacles?",
-      timestamp: '10:35 AM'
-    },
-    {
-      id: 6,
-      type: 'user',
-      content: "Certainly. In my previous role, we had to migrate a legacy system to a new microservices architecture under a tight deadline. The main challenge was ensuring data integrity and minimizing downtime...",
-      timestamp: '10:36 AM'
-    }
-  ]);
+export default function ChatArea({ onToggleRightSidebar }: ChatAreaProps) {
+  const [inputMessage, setInputMessage] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  
+  const {
+    messages,
+    isConnected,
+    isSpeaking,
+    isListening,
+    sendTextMessage,
+    startConversation,
+    endConversation,
+  } = useElevenLabs();
 
-  const [inputText, setInputText] = useState('');
-  const [isInputMicListening, setIsInputMicListening] = useState(false);
-  const messagesContainerRef = useRef<null | HTMLDivElement>(null);
-
-  // Simulación de detección de palabras nuevas
-  const wordSuggestion: WordSuggestion = {
-    word: 'specific',
-    suggestion: 'Intenta usar "I am proficient in..." o "I specialize in..." para sonar más profesional en entrevistas.'
-  };
-
-  const handleSendMessage = () => {
-    if (inputText.trim()) {
-      const newMessage: Message = {
-        id: messages.length + 1,
-        type: 'user',
-        content: inputText,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setMessages([...messages, newMessage]);
-      setInputText('');
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
-
-  const handleMicClick = () => {
-    setIsInputMicListening(!isInputMicListening);
-    if (onActivateMic) {
-      onActivateMic();
-    }
-    // Add actual voice input logic here in the future
-  };
-
-  // Auto-scroll to the bottom when new messages are added
+  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
-    if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Show typing indicator when AI is speaking
+  useEffect(() => {
+    setIsTyping(isSpeaking);
+  }, [isSpeaking]);
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (inputMessage.trim() && isConnected) {
+      sendTextMessage(inputMessage);
+      setInputMessage('');
+    }
+  };
+
+  const handleMicToggle = async () => {
+    try {
+      if (isConnected) {
+        await endConversation();
+      } else {
+        await startConversation();
+      }
+    } catch (error) {
+      console.error('Failed to toggle conversation:', error);
+    }
+  };
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('es-ES', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  };
+
   return (
-    <div className="flex flex-col h-full bg-white">
-      {/* Messages Area - This will scroll */}
-      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto space-y-4 p-6">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
-            <div className="max-w-[70%]">
-              <div
-                className={`rounded-lg px-4 py-3 shadow-sm ${
-                  message.type === 'user'
-                    ? 'text-white'
-                    : 'bg-gray-100 text-gray-800'
-                }`}
-                style={{
-                  backgroundColor: message.type === 'user' ? '#2A6CC8' : '#F3F4F6' // Explicit bg for bot
-                }}
-              >
-                <p className="text-sm leading-relaxed">{message.content}</p>
-                {message.pronunciation && (
-                  <div className="mt-2 text-xs opacity-90">
-                    ✓ Muy buena pronunciación
-                  </div>
-                )}
-              </div>
-              <div className="text-xs text-gray-500 mt-1 px-1">
-                {message.timestamp}
-              </div>
-            </div>
+    <div className="flex-1 flex flex-col bg-white">
+      {/* Chat Header */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-800">Conversación con TutorAI</h2>
+            <p className="text-sm text-gray-600">
+              {isConnected 
+                ? (isSpeaking ? 'Hablando...' : isListening ? 'Escuchando...' : 'Conectado')
+                : 'Desconectado'}
+            </p>
           </div>
-        ))}
+          <button
+            onClick={onToggleRightSidebar}
+            className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
       </div>
 
-      {/* Word Suggestion (Fixed above input area) */}
-      <div className="p-4 border-t border-gray-200 bg-white">
-        <div 
-          className="border-l-4 bg-orange-50 p-4 rounded-r-lg"
-          style={{ borderColor: '#ED8936' }}
-        >
-          <div className="flex items-start">
-            <div className="flex-1">
-              <h4 
-                className="text-sm font-semibold mb-1"
-                style={{ color: '#ED8936' }}
-              >
-                ✨ Sugerencia Personalizada
-              </h4>
-              <p className="text-sm text-gray-700">
-                {wordSuggestion.suggestion}
+      {/* Messages Area */}
+      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+        {messages.length === 0 ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+                <Mic className="w-12 h-12 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-700 mb-2">
+                ¡Comienza una conversación!
+              </h3>
+              <p className="text-sm text-gray-500 max-w-sm mx-auto">
+                Haz clic en el micrófono para hablar con TutorAI o escribe un mensaje para comenzar.
               </p>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Input Area (Fixed at the bottom) */}
-      <div className="p-4 border-t border-gray-200 bg-white">
-        <div className="flex items-end space-x-3">
-          <div className="flex-1">
-            <div 
-              className="flex items-end border-2 rounded-lg px-4 py-3 bg-white shadow-sm"
-              style={{ borderColor: '#2A6CC8' }}
-            >
-              <textarea
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Escribe tu respuesta..."
-                className="flex-1 resize-none outline-none text-sm bg-transparent"
-                rows={1}
-                style={{ minHeight: '24px', maxHeight: '100px' }} // Adjusted minHeight
-              />
-              <div className="flex items-center space-x-2 ml-3">
-                <button
-                  onClick={handleMicClick}
-                  className={`p-2 rounded-full transition-all duration-200 ${
-                    isInputMicListening 
-                      ? 'bg-red-500 shadow-lg scale-110' 
-                      : 'bg-red-400 hover:bg-red-500'
+        ) : (
+          <>
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`max-w-[70%] rounded-lg px-4 py-3 ${
+                    message.type === 'user'
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-100 text-gray-800'
                   }`}
                 >
-                  <Mic className="w-5 h-5 text-white" /> {/* Increased icon size */}
-                </button>
-                <button
-                  onClick={handleSendMessage}
-                  className="p-2 rounded-full transition-colors duration-200 text-white"
-                  style={{ backgroundColor: '#2A6CC8' }}
-                  disabled={!inputText.trim()}
-                >
-                  <Send className="w-5 h-5" /> {/* Increased icon size */}
-                </button>
+                  <p className="text-sm">{message.content}</p>
+                  <p className={`text-xs mt-1 ${
+                    message.type === 'user' ? 'text-blue-100' : 'text-gray-500'
+                  }`}>
+                    {formatTime(message.timestamp)}
+                    {message.isTranscript && ' • Transcrito'}
+                  </p>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
+            ))}
+            
+            {/* Typing Indicator */}
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="bg-gray-100 rounded-lg px-4 py-3">
+                  <div className="flex space-x-2">
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            <div ref={messagesEndRef} />
+          </>
+        )}
+      </div>
+
+      {/* Input Area */}
+      <div className="bg-white border-t border-gray-200 px-6 py-4">
+        <form onSubmit={handleSendMessage} className="flex items-center space-x-3">
+          <button
+            type="button"
+            onClick={handleMicToggle}
+            className={`p-3 rounded-full transition-all duration-200 ${
+              isConnected
+                ? 'bg-red-500 hover:bg-red-600 text-white'
+                : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+            }`}
+            aria-label={isConnected ? 'Detener conversación' : 'Iniciar conversación'}
+          >
+            {isConnected ? (
+              <MicOff className="w-5 h-5" />
+            ) : (
+              <Mic className="w-5 h-5" />
+            )}
+          </button>
+          
+          <input
+            ref={inputRef}
+            type="text"
+            value={inputMessage}
+            onChange={(e) => setInputMessage(e.target.value)}
+            placeholder={isConnected ? "Escribe un mensaje..." : "Inicia la conversación primero"}
+            className="flex-1 px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+            disabled={!isConnected}
+          />
+          
+          <button
+            type="submit"
+            disabled={!inputMessage.trim() || !isConnected}
+            className="p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Send className="w-5 h-5" />
+          </button>
+        </form>
         
-        {/* Status indicator */}
-        <div className="mt-2 text-center">
-          <div className="text-xs text-gray-500">
-            {isInputMicListening ? '🎤 Escuchando...' : 'Presiona Enter para enviar o usa el micrófono'}
-          </div>
-        </div>
+        {!isConnected && (
+          <p className="text-xs text-gray-500 mt-2 text-center">
+            Presiona el micrófono para comenzar la conversación
+          </p>
+        )}
       </div>
     </div>
   );
